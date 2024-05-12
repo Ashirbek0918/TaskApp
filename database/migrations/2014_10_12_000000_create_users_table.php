@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -17,11 +19,17 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->enum('role',['admin', 'programmer'])->default('programmer');
             $table->timestamps();
         });
+
+        User::create([
+            'name' => 'admin',
+            'email' => 'admin@example.com',
+            'password' =>Hash::make('12345678'),
+            'role' => 'admin',
+        ]);
     }
 
     /**

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -30,7 +31,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -38,7 +38,23 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
+
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'created_at' => 'datetime:d/m/Y h:i:s', 
+        'updated_at' => 'datetime:d/m/Y h:i:s',
     ];
+
+    public function toes()
+    {
+        return $this->hasMany(Task::class, 'buyer_id');
+    }
+
+    public function from()
+    {
+        return $this->hasMany(Task::class, 'assignee_id');
+    }
+
+    public function messagereads(){
+        return $this->hasMany(Message::class);
+    }
 }
