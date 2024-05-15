@@ -44,17 +44,21 @@ class User extends Authenticatable
         'updated_at' => 'datetime:d/m/Y h:i:s',
     ];
 
-    public function toes()
-    {
-        return $this->hasMany(Task::class, 'buyer_id');
-    }
-
-    public function from()
+    public function assignee()
     {
         return $this->hasMany(Task::class, 'assignee_id');
     }
 
+    public function buyer()
+    {
+        return $this->hasMany(Task::class, 'buyer_id');
+    }
+
     public function messagereads(){
         return $this->hasMany(Message::class);
+    }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

@@ -18,6 +18,15 @@ class AdminsResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-        ];
+            'tasks_count' => $this->assignee()->where('status', 'active')->count(),
+            'images' => $this->getImageUrls(),
+        ];        
+    }
+
+    protected function getImageUrls()
+    {
+        return $this->images->map(function ($image) {
+            return url("storage/".$image->path . $image->name);
+        });
     }
 }

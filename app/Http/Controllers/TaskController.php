@@ -15,6 +15,9 @@ use App\Http\Resources\TasksResource;
 // use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\TaskUpdateRequest;
+use App\Http\Resources\AdminsResource;
+use App\Http\Resources\FromTasksresource;
+use App\Http\Resources\ToesTasksresource;
 use Intervention\Image\Drivers\Imagick\Driver ;
 
 class TaskController extends Controller
@@ -49,9 +52,8 @@ class TaskController extends Controller
         ],201);
     }
 
-    public function all(Request $request){
-        $status = $request->input('status') ?? 'active';
-        $tasks  = Task::where('status', $status)->latest()->paginate($request->get('per_page', 10));
+    public function all( Request $request){
+        $tasks  =Task::latest()->paginate($request->get('per_page', 20));
         if(count($tasks)>0){
             $collection = [
                 'last_Page' => $tasks->lastPage(),
@@ -84,20 +86,16 @@ class TaskController extends Controller
         
     }
 
-    public function mytasks(Request $request){
-        $user  = auth()->user();
-        $user=User::find(auth()->user()->id);
-        $filtr = $request->input('filtr');
-        if($filtr == 'to'){
-            $tasks = $user->toes()->orderBy('id','desc')->get();
-        }elseif($filtr == 'from'){
-            $tasks = $user->from()->orderBy('id','desc')->get();
-        }
-        if(!empty($tasks)){
+    public function mytasks(User $user,Request $request){
+        if($user){
             return response()->json([
                 'success' => true,
-                'data' => TasksResource::collection($tasks)
-            ]);
+                'data' => [
+                    'user'=> new AdminsResource($user),
+                    'goto' => FromTasksresource::collection($user->buyer),
+                    'come' => ToesTasksresource::collection($user->assignee),
+                ]
+                ]);
         }
     }
 

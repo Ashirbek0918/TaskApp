@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('task/add',[TaskController::class,'addTask']); 
     Route::get('task/{task}',[TaskController::class,'task']); 
     Route::get('tasks',[TaskController::class,'all']);
-    Route::get('mytasks',[TaskController::class,'mytasks']);
+    Route::get('mytasks/{user}',[TaskController::class,'mytasks']);
     Route::delete('task/delete/{task}',[TaskController::class,'delete'])->middleware('can:delete-task,task');
     Route::put('task/update/{task}',[TaskController::class,'update']);
 
@@ -53,4 +53,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('obligation/update/{obligation}',[ObligationController::class,'edit']);
 
     });
+
+    Route::get('allcount',[MessageController::class,'alldata']);
 });

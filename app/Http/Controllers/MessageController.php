@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\MessageAddRequest;
 use App\Http\Resources\MessagesResource;
 use App\Http\Requests\MessageReadRequest;
+use App\Models\Task;
 
 class MessageController extends Controller
 {
@@ -28,12 +29,8 @@ class MessageController extends Controller
             $path = 'messages/images/';
             Storage::makeDirectory('public/' . $path);
             foreach ($request->file('images') as $image) {
-                // $manager = new ImageManager(Driver::class);
                 $image_name = time() . "-" . Str::random(10) . "." . $image->getClientOriginalExtension();
                 $image->move(storage_path('app/public/messages/images'), $image_name);
-                // $img = $manager->read($image);
-                // $img->scale(width:1080);
-                // $img->toJpeg(80)->save(storage_path('app/public/'.$path.$image_name));
                 $message->images()->create([
                     'name' => $image_name,
                     'path' => $path,
@@ -123,5 +120,17 @@ class MessageController extends Controller
                 'message' => 'Task and associated images deleted successfully'
             ]);
         }
+    }
+
+    public function alldata(){
+        $task = Task::where('status', 'active')->count();
+        $messages = Message::where('kind', 'task')->count();
+        return response()->json([
+            'success' => true,
+            'data' =>[
+                'total tasks' =>$task,
+                'total messages' =>$messages
+            ]
+        ]);
     }
 }
