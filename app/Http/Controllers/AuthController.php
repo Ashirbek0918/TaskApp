@@ -57,6 +57,11 @@ class AuthController extends Controller
     }
     public function update(Request $request, User $user)
     {
+        if(auth()->user()->id != $user->id){
+            return response()->json([
+                'error' => "Permission denied"
+            ]);
+        }
         $data = [
             'name' => $request->input('name', $user->name),
             'email' => $request->input('email', $user->email),
@@ -65,16 +70,17 @@ class AuthController extends Controller
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
-        $user->images()->get()->each(function ($image) {
+        
+
+        if ($user->update($data)) {
+            if ($request->hasFile('image')) {
+                $user->images()->get()->each(function ($image) {
             $imagePath = storage_path('app/public/' . $image->path . $image->name);
             if (File::exists($imagePath)) {
                 File::delete($imagePath);
             }
             $image->delete();
         });
-
-        if ($user->update($data)) {
-            if ($request->hasFile('image')) {
                 $path = 'users/images/';
                 Storage::makeDirectory('public/' . $path);
                 $image = $request->file('image');
@@ -101,7 +107,10 @@ class AuthController extends Controller
     public function getme()
     {
         $user = auth()->user();
-        return $user;
+        return response()->json([
+            'success' =>true,
+            'user' => new AdminsResource($user)
+        ]);
     }
     public function logOut(Request $request)
     {
@@ -138,4 +147,6 @@ class AuthController extends Controller
             'data' => $collection
         ]);
     }
+
+    
 }

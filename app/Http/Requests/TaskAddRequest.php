@@ -26,9 +26,8 @@ class TaskAddRequest extends FormRequest
         return [
             'title' =>'required|string',
             'description' =>'required|string',
-            'images' =>'required',
+            'images' =>'file',
             'assignee_id' =>'required|exists:users,id',
-            'buyer_id' =>'required|exists:users,id',
             'deadline' =>'required|int'
         ];
     }

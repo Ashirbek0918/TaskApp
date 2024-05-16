@@ -20,9 +20,9 @@ use App\Http\Controllers\ObligationController;
 
 Route::post('login',[AuthController::class,'login']);
 Route::middleware('auth:sanctum')->group(function(){
-    Route::post('admin/create',[AuthController::class,'create']);
+    Route::post('admin/create',[AuthController::class,'create'])->middleware('can:obligation-control');
     Route::put('admin/update/{user}',[AuthController::class,'update']);
-    Route::delete('admin/delete/{user}',[AuthController::class,'delete']);
+    Route::delete('admin/delete/{user}',[AuthController::class,'delete'])->middleware('can:obligation-control');
     Route::get('admins',[AuthController::class,'all']);
     Route::get('getme',[AuthController::class,'getme']);
     Route::delete('logOut',[AuthController::class,'logOut']);
@@ -31,11 +31,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('task/add',[TaskController::class,'addTask']); 
     Route::get('task/{task}',[TaskController::class,'task']); 
     Route::get('tasks',[TaskController::class,'all']);
-    Route::get('mytasks/{user}',[TaskController::class,'mytasks']);
+    Route::get('mytasks/{id}',[TaskController::class,'mytasks']);
     Route::delete('task/delete/{task}',[TaskController::class,'delete'])->middleware('can:delete-task,task');
     Route::put('task/update/{task}',[TaskController::class,'update']);
-
-
     //message
 
     Route::post('message/add',[MessageController::class,'add']);

@@ -26,7 +26,6 @@ class MessageAddRequest extends FormRequest
     {
         return [
             'message' => 'required|string',
-            'user_id' => 'required|exists:users,id',
             'kind' => ['required', Rule::in(['message','task'])],
         ];
     }

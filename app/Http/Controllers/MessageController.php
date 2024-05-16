@@ -22,7 +22,7 @@ class MessageController extends Controller
         $data = $request->validated();
         $message = Message::create([
             'message' => $data['message'],
-            'user_id' => $data['user_id'],
+            'user_id' => auth()->user()->id,
             'kind' => $data['kind'],
         ]);
         if ($request->hasFile('images')) {

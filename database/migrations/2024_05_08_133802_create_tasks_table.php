@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('assignee_id');
             $table->foreign('buyer_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('assignee_id')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('status',['active','finished','accepted', 'failed'])->default('active');
+            $table->enum('status',['active','processing','finished','accepted', 'failed'])->default('active');
             $table->timestamp('deadline')->nullable();
             $table->timestamps();
         });
